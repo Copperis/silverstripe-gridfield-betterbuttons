@@ -93,9 +93,16 @@ class BetterButtonDataObject extends DataExtension {
      */
     protected function getDefaultButtonList($config) {
         $new = ($this->owner->ID == 0);
+        $useConfig = $config;
+        
+        // Check for a custom button list for this specific dataobject
+        if ($classDefaults = $this->owner->stat($config)) {
+            $useConfig = $classDefaults;
+        }
+        
         $list = $new ?
-            Config::inst()->get($config, $this->checkVersioned() ? "versioned_create" : "create") :
-            Config::inst()->get($config, $this->checkVersioned() ? "versioned_edit" : "edit");
+            Config::inst()->get($useConfig, $this->checkVersioned() ? "versioned_create" : "create") :
+            Config::inst()->get($useConfig, $this->checkVersioned() ? "versioned_edit" : "edit");
 
         return $list ?: array ();
     }    
